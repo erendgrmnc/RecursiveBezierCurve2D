@@ -218,18 +218,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CurveLineRenderer
       objectReference: {fileID: 0}
-    - target: {fileID: 5256175215668903753, guid: 337e59f7955839b4fb596c19b2a1b322, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5256175215668903753, guid: 337e59f7955839b4fb596c19b2a1b322, type: 3}
-      propertyPath: m_Positions.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5256175215668903753, guid: 337e59f7955839b4fb596c19b2a1b322, type: 3}
-      propertyPath: m_Positions.Array.data[1].y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5256175215668903754, guid: 337e59f7955839b4fb596c19b2a1b322, type: 3}
       propertyPath: m_RootOrder
       value: 4
