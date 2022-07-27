@@ -33,7 +33,10 @@ public class PathFinder : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
+        if (curvePoints.Length > 0)
+        {
+            Move();
+        }
     }
 
     void Move()
@@ -41,6 +44,8 @@ public class PathFinder : MonoBehaviour
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position,
             curvePoints[nextPoint],
             speed * Time.deltaTime);
+
+
 
         if (gameObject.transform.position == curvePoints[nextPoint])
         {
@@ -51,6 +56,11 @@ public class PathFinder : MonoBehaviour
             else
             {
                 nextPoint++;
+            }
+
+            if (nextPoint >= 0 && nextPoint < curvePoints.Length)
+            {
+                RotateToNextPoint(curvePoints[nextPoint]);
             }
         }
 
@@ -64,5 +74,26 @@ public class PathFinder : MonoBehaviour
             nextPoint = 1;
             isGoingBack = false;
         }
+    }
+
+    void RotateToNextPoint(Vector3 target)
+    {
+
+        var offset = 90f;
+        Vector2 direction = target - transform.position;
+        direction.Normalize();
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(Vector3.back * (angle + offset));
+
+    }
+
+    public void ResetCourse()
+    {
+        nextPoint = 0;
+        if (curvePoints.Length > 0)
+        {
+            gameObject.transform.position = curvePoints[nextPoint];
+        }
+        
     }
 }
