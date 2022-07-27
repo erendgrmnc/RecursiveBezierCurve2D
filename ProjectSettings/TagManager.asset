@@ -10,6 +10,7 @@ TagManager:
   - CurveLine
   - PathFinder
   - SceneManager
+  - Line
   layers:
   - Default
   - TransparentFX
@@ -46,4 +47,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2351513815
     locked: 0
