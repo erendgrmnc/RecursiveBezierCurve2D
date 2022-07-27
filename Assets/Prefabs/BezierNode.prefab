@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4893026283784239567}
   - component: {fileID: 6191899306148352509}
   - component: {fileID: 6813919371445393865}
-  - component: {fileID: 255297300149789234}
   m_Layer: 0
   m_Name: BezierNode
   m_TagString: BezierCurveNode
@@ -102,15 +101,3 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &255297300149789234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502231764887168305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56651516f93b588458b432f9f0fd588c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
