@@ -4,31 +4,15 @@ using UnityEngine;
 
 public class ControlManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject bezierNode;
-
     private BezierManager bezierManager;
-
-    private GameObject bezierNodes;
 
     private GameObject selectedNode = null;
     private Vector3 offset = Vector3.zero;
     private Vector3 mousePosition;
 
-    void Awake()
-    {
-        if (!bezierNode)
-        {
-            var errorMessage = "Can't found bezier node.";
-
-            Debug.LogError(errorMessage);
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-        InitBezierNodesParent();
         bezierManager = GameObject.FindGameObjectWithTag("BezierManager").GetComponent<BezierManager>();
     }
 
@@ -37,11 +21,6 @@ public class ControlManager : MonoBehaviour
     {
         CheckLeftMouseInput();
         CheckForRightMouseBtnInput();
-    }
-
-    void InitBezierNodesParent()
-    {
-        bezierNodes = new GameObject("BezierNodes");
     }
 
     void CheckLeftMouseInput()
@@ -63,7 +42,6 @@ public class ControlManager : MonoBehaviour
         {
             MoveNode();
         }
-
     }
 
     void CheckForRightMouseBtnInput()
@@ -77,17 +55,9 @@ public class ControlManager : MonoBehaviour
                 Vector3 mousePosition = Input.mousePosition;
                 mousePosition.z = Camera.main.nearClipPlane;
                 var spawnPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-                SpawnBezierNode(spawnPosition);
+                bezierManager.SpawnBezierNode(spawnPosition);
             }
         }
-    }
-
-    //TODO: Move to BezierManger (Violation Of Class Responsibility)
-    void SpawnBezierNode(Vector3 spawnPosition)
-    {
-        var newBezierNode = Instantiate(bezierNode, spawnPosition, gameObject.transform.rotation);
-        newBezierNode.transform.parent = bezierNodes.transform;
-        bezierManager.AddNode(newBezierNode);
     }
 
     void MoveNode()
@@ -95,7 +65,7 @@ public class ControlManager : MonoBehaviour
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         selectedNode.transform.position = mousePosition + offset;
      
-        if (Input.GetMouseButtonUp(0) && selectedNode)
+        if (Input.GetMouseButtonUp(0) && selectedNode != null)
         {
             selectedNode = null;
         }

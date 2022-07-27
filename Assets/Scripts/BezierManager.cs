@@ -12,12 +12,15 @@ public class BezierManager : MonoBehaviour
     private int lineDensity;
 
     [SerializeField]
+    private GameObject bezierNode;
+    [SerializeField]
     private GameObject linePrefab;
+    private GameObject bezierNodes;
+    private GameObject lastAddedNode;
+    private List<GameObject> bezierNodesOnScene;
+
     [SerializeField]
     private LineRenderer curveLinePrefab;
-
-    private List<GameObject> bezierNodesOnScene;
-    private GameObject lastAddedNode;
 
     private const int minNodesToDrawLines = 2;
     private const int minQuadraticBezierNode = 4;
@@ -27,6 +30,7 @@ public class BezierManager : MonoBehaviour
     {
         bezierNodesOnScene = new List<GameObject>();
         bezierCurvePointPositions = new Vector3[lineDensity];
+        InitBezierNodesParent();
     }
 
     // Start is called before the first frame update
@@ -39,6 +43,11 @@ public class BezierManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    void InitBezierNodesParent()
+    {
+        bezierNodes = new GameObject("BezierNodes");
     }
 
     public void AddNode(GameObject node)
@@ -69,6 +78,13 @@ public class BezierManager : MonoBehaviour
         {
             DrawQuadraticBezierCurve();
         }
+    }
+
+    public void SpawnBezierNode(Vector3 spawnPosition)
+    {
+        var newBezierNode = Instantiate(bezierNode, spawnPosition, gameObject.transform.rotation);
+        newBezierNode.transform.parent = bezierNodes.transform;
+        AddNode(newBezierNode);
     }
 
     void DrawLinesBetweenNodes(Transform firstNodeTransform, Transform secondNodeTransform)
