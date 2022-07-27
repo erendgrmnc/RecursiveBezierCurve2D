@@ -100,5 +100,7 @@ public class SceneManager : MonoBehaviour
     {
         ToggleSpaceShipSpeedPanel(false);
         ToggleSpaceShip();
+        
+        ToggleSpaceShipSpeedPanel(spaceShip.activeSelf);
     }
 }

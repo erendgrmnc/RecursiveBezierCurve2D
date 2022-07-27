@@ -1455,7 +1455,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1524898732}
         m_TargetAssemblyTypeName: BezierManager, Assembly-CSharp
-        m_MethodName: CreateQuadraticBezierCurve
+        m_MethodName: CreateQubicBezierCurve
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1849,11 +1849,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 76931410c87f8944c8f4e82d14d416dd, type: 3}
   - {fileID: 21300000, guid: 2d85908cb6fc51e459664082ef763be8, type: 3}
   - {fileID: 21300000, guid: 607aac7d03839664db25d5797c6922bf, type: 3}
-  quadraticBezierCurveInitNodes:
-  - {x: -5, y: -3, z: 0.3}
-  - {x: -3, y: 1, z: 0.3}
-  - {x: 4, y: 2, z: 0.3}
-  - {x: 5, y: -4, z: 0.3}
+  qubicBezierCurveInitNodes:
+  - {x: -4.2, y: -2.6, z: 0.3}
+  - {x: -3.2, y: 2, z: 0.3}
+  - {x: 2.4, y: 2, z: 0.3}
+  - {x: 3.8, y: -2.7, z: 0.3}
 --- !u!1 &1572631625
 GameObject:
   m_ObjectHideFlags: 0
