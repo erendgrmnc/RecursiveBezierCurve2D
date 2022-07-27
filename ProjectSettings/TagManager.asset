@@ -9,6 +9,7 @@ TagManager:
   - BezierCurveNode
   - CurveLine
   - PathFinder
+  - SceneManager
   layers:
   - Default
   - TransparentFX
