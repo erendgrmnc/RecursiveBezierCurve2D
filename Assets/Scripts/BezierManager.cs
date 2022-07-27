@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 
 public class BezierManager : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class BezierManager : MonoBehaviour
 
     [SerializeField]
     private int lineDensity;
+
+    private int lastPlanetIndex;
 
     [SerializeField]
     private GameObject bezierNode;
@@ -28,6 +32,12 @@ public class BezierManager : MonoBehaviour
 
     private const int minNodesToDrawLines = 2;
     private Vector3[] bezierCurvePointPositions;
+
+    [SerializeField]
+    private Sprite[] planetSprites;
+
+    [SerializeField]
+    private Vector3[] quadraticBezierCurveInitNodes;
 
     void Awake()
     {
@@ -63,6 +73,11 @@ public class BezierManager : MonoBehaviour
         return bezierNodesOnScene.Count < maxNode;
     }
 
+    public bool IsLinesBetweenNodesShowing()
+    {
+        return linesBetweenNodes.activeSelf;
+    }
+
     public bool CanCurveDrawable()
     {
         int spawnedBezierNodes = GetSpawnedBezierNode();
@@ -71,19 +86,33 @@ public class BezierManager : MonoBehaviour
         return spawnedBezierNodes >= minNodesToDrawCurve;
     }
 
+    Sprite GetRandomPlanetSprite()
+    {
+        int randomIndex = 0;
+        do
+        {
+            randomIndex = new Random().Next(0, planetSprites.Length);
+
+        }
+        while (randomIndex == lastPlanetIndex);
+
+        lastPlanetIndex = randomIndex;
+        return planetSprites[randomIndex];
+    }
+
     void InitBezierNodesParent()
     {
-        bezierNodes = new GameObject("BezierNodes");
+        bezierNodes = new GameObject(Constants.GameObjectNames.BezierNodes);
     }
 
     void InitLinesBetweenNodeObject()
     {
-        linesBetweenNodes = new GameObject("LinesBetweenBezierNodes");
+        linesBetweenNodes = new GameObject(Constants.GameObjectNames.LinesBetweenBezierNodes);
     }
 
     void InitSceneManager()
     {
-        var sceneManagerObj = GameObject.FindGameObjectWithTag("SceneManager");
+        var sceneManagerObj = GameObject.FindGameObjectWithTag(Constants.Tags.SceneManager);
         if (sceneManagerObj != null)
         {
             sceneManager = sceneManagerObj.GetComponent<SceneManager>();
@@ -105,6 +134,7 @@ public class BezierManager : MonoBehaviour
         lastAddedNode = node;
 
         sceneManager.ToggleSpawnSpaceShipButton(CanCurveDrawable());
+        sceneManager.ToggleLineBetweenNodesButtonInteractibility(bezierNodesOnScene.Count > 2);
     }
 
     public void HandleBezierCurve()
@@ -120,6 +150,10 @@ public class BezierManager : MonoBehaviour
     {
         var newBezierNode = Instantiate(bezierNode, spawnPosition, gameObject.transform.rotation);
         newBezierNode.transform.parent = bezierNodes.transform;
+        var bezierNodeSpriteRenderer = newBezierNode.GetComponent<SpriteRenderer>();
+        var spriteSize = bezierNodeSpriteRenderer.size;
+        bezierNodeSpriteRenderer.sprite = GetRandomPlanetSprite();
+        bezierNodeSpriteRenderer.size = spriteSize;
         AddNode(newBezierNode);
     }
 
@@ -142,7 +176,10 @@ public class BezierManager : MonoBehaviour
 
         for (int i = 0; i < bezierNodesOnScene.Count; i++)
         {
-            controlPoints[i] = bezierNodesOnScene[i].transform.position;
+            if (bezierNodesOnScene[i] != null)
+            {
+                controlPoints[i] = bezierNodesOnScene[i].transform.position;
+            }
         }
 
         var controlPointsSpan = new Span<Vector3>(controlPoints);
@@ -167,27 +204,67 @@ public class BezierManager : MonoBehaviour
         return new Vector3(oneMinusT * firstBezierNode.x + tValue * secondBezierNode.x, oneMinusT * firstBezierNode.y + tValue * secondBezierNode.y, firstBezierNode.z);
     }
 
-    void SetCourseForPathFinder()
-    {
-        var pathFinder = GameObject.FindGameObjectWithTag(Constants.Tags.PathFinder);
-        if (pathFinder != null)
-        {
-            pathFinder.GetComponent<PathFinder>().SetPoints(bezierCurvePointPositions);
-        }
-    }
-
     void HandleLineRenderer()
     {
         if (bezierCurvePointPositions != null)
         {
             curveLinePrefab.SetPositions(bezierCurvePointPositions);
 
-            SetCourseForPathFinder();
+            var pathFinder = GameObject.FindGameObjectWithTag(Constants.Tags.PathFinder);
+            if (pathFinder != null)
+            {
+                pathFinder.GetComponent<PathFinder>().SetCourseForPathFinder(bezierCurvePointPositions);
+            }
         }
     }
 
     public void ToggleVisibiltyOfLinesBetweenNodes()
     {
         linesBetweenNodes.SetActive(!linesBetweenNodes.activeSelf);
+    }
+
+    public Vector3[] GetBezierCurvePoints()
+    {
+        return bezierCurvePointPositions;
+    }
+
+    public void CreateQuadraticBezierCurve()
+    {
+        if (bezierNodesOnScene.Count > 0)
+        {
+            DestroyNodes();
+        }
+
+        if (linesBetweenNodes.transform.GetComponentsInChildren<Transform>().Length > 0)
+        {
+            DestroyLines();
+        }
+
+        if (quadraticBezierCurveInitNodes.Length == 4)
+        {
+            foreach (var node in quadraticBezierCurveInitNodes)
+            {
+                SpawnBezierNode(node);
+            }
+        }
+    }
+
+    private void DestroyNodes()
+    {
+        foreach (var bezierNode in bezierNodesOnScene)
+        {
+            Destroy(bezierNode);
+        }
+    }
+
+    private void DestroyLines()
+    {
+        foreach (Transform child in linesBetweenNodes.transform)
+        {
+            if (child.tag == Constants.Tags.Line)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
 }
