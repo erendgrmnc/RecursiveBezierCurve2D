@@ -70,7 +70,6 @@ public class SceneManager : MonoBehaviour
             }
             ToggleSpaceShipSpeedPanel(!prevState);
             pathFinder.ResetCourse();
-            
         }
     }
 
@@ -95,5 +94,11 @@ public class SceneManager : MonoBehaviour
     void ToggleSpaceShipSpeedPanel(bool isActivable)
     {
         toggleSpaceShipSpeedPanel.SetActive(isActivable);
+    }
+
+    public void DisableShipAndShipButton()
+    {
+        ToggleSpaceShipSpeedPanel(false);
+        ToggleSpaceShip();
     }
 }
