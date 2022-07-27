@@ -5,18 +5,23 @@ using UnityEngine;
 public class PathFinder : MonoBehaviour
 {
     [SerializeField]
+    private float speed;
+
+    private int nextPoint = 0;
+    private const int minSpeed = 1;
+    private const int maxSpeed = 50;
+    
+    private bool isGoingBack = false;
+
+    [SerializeField]
     private LineRenderer lineRenderer;
-    public float speed;
 
     private Vector3[] positions = new Vector3[397];
     private Vector3[] curvePoints;
-    private int nextPoint = 0;
-    private bool isGoingBack = false;
 
     void Start()
     {
         curvePoints = GetLinePointsInWorldSpace();
-        gameObject.transform.position = curvePoints[nextPoint];
     }
 
     public void SetPoints(Vector3[] points)
@@ -27,7 +32,6 @@ public class PathFinder : MonoBehaviour
     Vector3[] GetLinePointsInWorldSpace()
     {
         lineRenderer.GetPositions(positions);
-
         return positions;
     }
 
@@ -44,8 +48,6 @@ public class PathFinder : MonoBehaviour
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position,
             curvePoints[nextPoint],
             speed * Time.deltaTime);
-
-
 
         if (gameObject.transform.position == curvePoints[nextPoint])
         {
@@ -76,6 +78,15 @@ public class PathFinder : MonoBehaviour
         }
     }
 
+    public void SetCourseForPathFinder(Vector3[] path)
+    {
+        var pathFinder = GameObject.FindGameObjectWithTag(Constants.Tags.PathFinder);
+        if (pathFinder != null)
+        {
+            pathFinder.GetComponent<PathFinder>().SetPoints(path);
+        }
+    }
+
     void RotateToNextPoint(Vector3 target)
     {
 
@@ -90,10 +101,32 @@ public class PathFinder : MonoBehaviour
     public void ResetCourse()
     {
         nextPoint = 0;
+        isGoingBack = false;
+        var curvePoints = GameObject.FindGameObjectWithTag(Constants.Tags.BezierManager).GetComponent<BezierManager>()
+            .GetBezierCurvePoints();
+
+        SetCourseForPathFinder(curvePoints);
+
         if (curvePoints.Length > 0)
         {
             gameObject.transform.position = curvePoints[nextPoint];
         }
-        
+    }
+
+    public void IncreaseSpeed()
+    {
+        if (speed < maxSpeed)
+        {
+            
+        }
+        speed++;
+    }
+
+    public void DecreaseSpeed()
+    {
+        if (speed > minSpeed)
+        {
+            speed--;
+        }
     }
 }
