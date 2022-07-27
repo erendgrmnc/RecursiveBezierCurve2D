@@ -382,6 +382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxNode: 4
   lineDensity: 50
+  bezierNode: {fileID: 502231764887168305, guid: e26a1cd57c4035d40a0c4b87a1320a6c, type: 3}
   linePrefab: {fileID: 3676118469257380700, guid: 64bc45507c715e045956310aded61d24, type: 3}
   curveLinePrefab: {fileID: 1003977097}
 --- !u!1 &2138912770
@@ -413,7 +414,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ec5d2d79a5b9448b3c5a7682831be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bezierNode: {fileID: 502231764887168305, guid: e26a1cd57c4035d40a0c4b87a1320a6c, type: 3}
 --- !u!4 &2138912772
 Transform:
   m_ObjectHideFlags: 0
