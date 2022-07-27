@@ -31,7 +31,7 @@ public class ControlManager : MonoBehaviour
 
             Collider2D targetObject = Physics2D.OverlapPoint(mousePosition);
 
-            if (targetObject && targetObject.tag == "BezierCurveNode")
+            if (targetObject && targetObject.tag == Constants.Tags.BezierNode)
             {
                 selectedNode = targetObject.transform.gameObject;
                 offset = selectedNode.transform.position - mousePosition;
