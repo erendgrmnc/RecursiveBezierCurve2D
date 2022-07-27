@@ -39,7 +39,7 @@ public class BezierManager : MonoBehaviour
     private Sprite[] planetSprites;
 
     [SerializeField]
-    private Vector3[] quadraticBezierCurveInitNodes;
+    private Vector3[] qubicBezierCurveInitNodes;
 
     void Awake()
     {
@@ -230,7 +230,7 @@ public class BezierManager : MonoBehaviour
         return bezierCurvePointPositions;
     }
 
-    public void CreateQuadraticBezierCurve()
+    public void CreateQubicBezierCurve()
     {
         if (linesBetweenNodes.transform.GetComponentsInChildren<Transform>().Length > 0)
         {
@@ -247,9 +247,9 @@ public class BezierManager : MonoBehaviour
 
         sceneManager.DisableShipAndShipButton();
 
-        if (quadraticBezierCurveInitNodes.Length == 4)
+        if (qubicBezierCurveInitNodes.Length == 4)
         {
-            foreach (var node in quadraticBezierCurveInitNodes)
+            foreach (var node in qubicBezierCurveInitNodes)
             {
                 SpawnBezierNode(node);
             }
