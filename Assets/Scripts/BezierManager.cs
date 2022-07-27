@@ -144,6 +144,12 @@ public class BezierManager : MonoBehaviour
         if (bezierCurvePointPositions != null)
         {
             curveLinePrefab.SetPositions(bezierCurvePointPositions);
+
+            var pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinder>();
+            if (pathFinder != null)
+            {
+                pathFinder.SetPoints(bezierCurvePointPositions);
+            }
         }
     }
 }
