@@ -13,7 +13,6 @@ public class PathFinder : MonoBehaviour
     
     private bool isGoingBack = false;
 
-    [SerializeField]
     private LineRenderer lineRenderer;
 
     private Vector3[] positions = new Vector3[397];
@@ -21,12 +20,18 @@ public class PathFinder : MonoBehaviour
 
     void Start()
     {
-        curvePoints = GetLinePointsInWorldSpace();
+        //curvePoints = GetLinePointsInWorldSpace();
     }
 
     public void SetPoints(Vector3[] points)
     {
         curvePoints = points;
+    }
+
+    public void SetLineRenderer(LineRenderer lineRenderer)
+    {
+        this.lineRenderer = lineRenderer;
+        curvePoints = GetLinePointsInWorldSpace();
     }
 
     Vector3[] GetLinePointsInWorldSpace()

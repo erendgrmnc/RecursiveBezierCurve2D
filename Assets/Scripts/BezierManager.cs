@@ -20,13 +20,15 @@ public class BezierManager : MonoBehaviour
     private GameObject bezierNode;
     [SerializeField]
     private GameObject linePrefab;
+
+    public GameObject curveLinePrefab;
+
     private GameObject bezierNodes;
     private GameObject lastAddedNode;
     private GameObject linesBetweenNodes;
     private List<GameObject> bezierNodesOnScene;
 
-    [SerializeField]
-    private LineRenderer curveLinePrefab;
+    private LineRenderer curveLineRenderer;
 
     private SceneManager sceneManager;
 
@@ -50,7 +52,7 @@ public class BezierManager : MonoBehaviour
 
     void Start()
     {
-        curveLinePrefab.positionCount = lineDensity;
+        CreateCurveLineRenderer();
     }
 
     void Update()
@@ -208,7 +210,7 @@ public class BezierManager : MonoBehaviour
     {
         if (bezierCurvePointPositions != null)
         {
-            curveLinePrefab.SetPositions(bezierCurvePointPositions);
+            curveLineRenderer.SetPositions(bezierCurvePointPositions);
 
             var pathFinder = GameObject.FindGameObjectWithTag(Constants.Tags.PathFinder);
             if (pathFinder != null)
@@ -230,15 +232,20 @@ public class BezierManager : MonoBehaviour
 
     public void CreateQuadraticBezierCurve()
     {
-        if (bezierNodesOnScene.Count > 0)
-        {
-            DestroyNodes();
-        }
-
         if (linesBetweenNodes.transform.GetComponentsInChildren<Transform>().Length > 0)
         {
             DestroyLines();
         }
+
+        if (bezierNodesOnScene.Count > 0)
+        {
+            DestroyNodes();
+        }
+        
+        DestroyCurveLineRenderer();
+        CreateCurveLineRenderer();
+
+        sceneManager.DisableShipAndShipButton();
 
         if (quadraticBezierCurveInitNodes.Length == 4)
         {
@@ -253,8 +260,10 @@ public class BezierManager : MonoBehaviour
     {
         foreach (var bezierNode in bezierNodesOnScene)
         {
-            Destroy(bezierNode);
+            Destroy(bezierNode.gameObject);
         }
+
+        bezierNodesOnScene.Clear();
     }
 
     private void DestroyLines()
@@ -266,5 +275,32 @@ public class BezierManager : MonoBehaviour
                 Destroy(child.gameObject);
             }
         }
+    }
+
+    private void DestroyCurveLineRenderer()
+    {
+        var currentCurveLineRendererObj = GameObject.FindGameObjectWithTag(Constants.Tags.CurveLineRenderer);
+        if (currentCurveLineRendererObj != null)
+        {
+            Destroy(currentCurveLineRendererObj);
+        }
+    }
+
+    private void CreateCurveLineRenderer()
+    {
+        var curveLineObject = Instantiate(curveLinePrefab, curveLinePrefab.transform.position, curveLinePrefab.transform.rotation);
+        curveLineRenderer = curveLineObject.GetComponent<LineRenderer>();
+        InitCurveLineRenderer();
+
+        var pathFinder = GameObject.FindGameObjectWithTag(Constants.Tags.PathFinder);
+        if (pathFinder)
+        {
+            pathFinder.GetComponent<PathFinder>().SetLineRenderer(curveLineRenderer);
+        }
+    }
+
+    void InitCurveLineRenderer()
+    {
+        curveLineRenderer.positionCount = lineDensity;
     }
 }
