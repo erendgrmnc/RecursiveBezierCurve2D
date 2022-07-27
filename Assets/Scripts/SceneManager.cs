@@ -10,10 +10,20 @@ public class SceneManager : MonoBehaviour
     [SerializeField]
     private GameObject spaceShip;
     private BezierManager bezierManager;
+
     [SerializeField]
     private Button toggleSpaceShipButton;
     [SerializeField]
     private TMPro.TMP_Text toggleSpaceShipButtonText;
+
+    [SerializeField]
+    private Button toggleLineBetweenNodesButton;
+    [SerializeField]
+    private TMPro.TMP_Text toggleLineBetweenNodesText;
+
+    [SerializeField] 
+    private GameObject toggleSpaceShipSpeedPanel;
+
 
     void Start()
     {
@@ -48,16 +58,42 @@ public class SceneManager : MonoBehaviour
     {
         if (spaceShip && bezierManager.CanCurveDrawable())
         {
-            if (spaceShip.activeSelf)
+            bool prevState = spaceShip.activeSelf;
+            spaceShip.SetActive(!spaceShip.activeSelf);
+            if (prevState)
             {
-                pathFinder.ResetCourse();
                 toggleSpaceShipButtonText.text = Constants.UITexts.ToggleSpaceShipButtonDeactivatedText;
             }
             else
             {
                 toggleSpaceShipButtonText.text = Constants.UITexts.ToggleSpaceShipButtonActiveText;
             }
-            spaceShip.SetActive(!spaceShip.activeSelf);
+            ToggleSpaceShipSpeedPanel(!prevState);
+            pathFinder.ResetCourse();
+            
         }
+    }
+
+    public void ToggleLineBetweenNodesButtonInteractibility(bool isInteractable)
+    {
+        toggleLineBetweenNodesButton.interactable = isInteractable;
+    }
+
+    public void ToggleLineBetweenNodesButton()
+    {
+        bezierManager.ToggleVisibiltyOfLinesBetweenNodes();
+        if (!bezierManager.IsLinesBetweenNodesShowing())
+        {
+            toggleLineBetweenNodesText.text = Constants.UITexts.ToggleLineBetweenNodesButtonDeactivatedText;
+        }
+        else
+        {
+            toggleLineBetweenNodesText.text = Constants.UITexts.ToggleLineBetweenNodesButtonActiveText;
+        }
+    }
+
+    void ToggleSpaceShipSpeedPanel(bool isActivable)
+    {
+        toggleSpaceShipSpeedPanel.SetActive(isActivable);
     }
 }
