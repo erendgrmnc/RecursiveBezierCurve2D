@@ -17,6 +17,7 @@ namespace Constants
         public static string BezierManager = "BezierManager";
         public static string Line = "Line";
         public static string SceneManager = "SceneManager";
+        public static string CurveLineRenderer = "CurveLine";
     }
 
     public static class UITexts
