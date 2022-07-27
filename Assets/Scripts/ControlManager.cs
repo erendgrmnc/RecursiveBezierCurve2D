@@ -13,7 +13,7 @@ public class ControlManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bezierManager = GameObject.FindGameObjectWithTag("BezierManager").GetComponent<BezierManager>();
+        bezierManager = GameObject.FindGameObjectWithTag(Constants.Tags.BezierManager).GetComponent<BezierManager>();
     }
 
     // Update is called once per frame
