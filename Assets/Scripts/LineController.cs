@@ -34,8 +34,5 @@ public class LineController : MonoBehaviour
         {
             lineRenderer.SetPosition(i, points[i].transform.position);
         }
-
-        var bezierManager = GameObject.FindGameObjectWithTag("BezierManager").GetComponent<BezierManager>();
-        bezierManager.HandleBezierCurve();
     }
 }

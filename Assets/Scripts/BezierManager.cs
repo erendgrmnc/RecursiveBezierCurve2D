@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -17,13 +18,15 @@ public class BezierManager : MonoBehaviour
     private GameObject linePrefab;
     private GameObject bezierNodes;
     private GameObject lastAddedNode;
+    private GameObject linesBetweenNodes;
     private List<GameObject> bezierNodesOnScene;
 
     [SerializeField]
     private LineRenderer curveLinePrefab;
 
+    private SceneManager sceneManager;
+
     private const int minNodesToDrawLines = 2;
-    private const int minQuadraticBezierNode = 4;
     private Vector3[] bezierCurvePointPositions;
 
     void Awake()
@@ -31,23 +34,60 @@ public class BezierManager : MonoBehaviour
         bezierNodesOnScene = new List<GameObject>();
         bezierCurvePointPositions = new Vector3[lineDensity];
         InitBezierNodesParent();
+        InitLinesBetweenNodeObject();
+        InitSceneManager();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         curveLinePrefab.positionCount = lineDensity;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        HandleBezierCurve();
+    }
 
+    public int GetSpawnedBezierNode()
+    {
+        return bezierNodesOnScene.Count;
+    }
+
+    public int GetMinBezierNodesToDrawCurve()
+    {
+        return minNodesToDrawLines;
+    }
+
+    public bool IsNodeSpawnable()
+    {
+        return bezierNodesOnScene.Count < maxNode;
+    }
+
+    public bool CanCurveDrawable()
+    {
+        int spawnedBezierNodes = GetSpawnedBezierNode();
+        int minNodesToDrawCurve = GetMinBezierNodesToDrawCurve();
+
+        return spawnedBezierNodes >= minNodesToDrawCurve;
     }
 
     void InitBezierNodesParent()
     {
         bezierNodes = new GameObject("BezierNodes");
+    }
+
+    void InitLinesBetweenNodeObject()
+    {
+        linesBetweenNodes = new GameObject("LinesBetweenBezierNodes");
+    }
+
+    void InitSceneManager()
+    {
+        var sceneManagerObj = GameObject.FindGameObjectWithTag("SceneManager");
+        if (sceneManagerObj != null)
+        {
+            sceneManager = sceneManagerObj.GetComponent<SceneManager>();
+        }
     }
 
     public void AddNode(GameObject node)
@@ -63,23 +103,19 @@ public class BezierManager : MonoBehaviour
         HandleBezierCurve();
 
         lastAddedNode = node;
+
+        sceneManager.ToggleSpawnSpaceShipButton(CanCurveDrawable());
     }
 
     public void HandleBezierCurve()
     {
         int nodeCount = bezierNodesOnScene.Count;
 
-        if (nodeCount == 2)
+        if (nodeCount >= 2)
         {
-            DrawLineerBezierCurve();
-        }
-
-        if (nodeCount == minQuadraticBezierNode)
-        {
-            DrawQuadraticBezierCurve();
+            DrawBezierCurve();
         }
     }
-
     public void SpawnBezierNode(Vector3 spawnPosition)
     {
         var newBezierNode = Instantiate(bezierNode, spawnPosition, gameObject.transform.rotation);
@@ -94,49 +130,50 @@ public class BezierManager : MonoBehaviour
         points[1] = secondNodeTransform;
 
         var newLine = Instantiate(linePrefab, gameObject.transform.position, gameObject.transform.rotation);
+        newLine.transform.parent = linesBetweenNodes.transform;
         newLine.SetActive(false);
         newLine.GetComponent<LineController>().SetUpLine(points);
         newLine.SetActive(true);
     }
 
-    public bool IsNodeSpawnable()
+    void DrawBezierCurve()
     {
-        return bezierNodesOnScene.Count < maxNode;
-    }
+        var controlPoints = new Vector3[bezierNodesOnScene.Count];
 
-    void DrawLineerBezierCurve()
-    {
+        for (int i = 0; i < bezierNodesOnScene.Count; i++)
+        {
+            controlPoints[i] = bezierNodesOnScene[i].transform.position;
+        }
+
+        var controlPointsSpan = new Span<Vector3>(controlPoints);
+
         for (int i = 0; i < lineDensity; i++)
         {
             float tValue = (i + 1) / (float)lineDensity;
-            bezierCurvePointPositions[i] = CalculateLineerBezierPoint(tValue, bezierNodesOnScene[0].transform.position, bezierNodesOnScene[1].transform.position);
+            bezierCurvePointPositions[i] = CalculateRecursiveBezierPoint(controlPoints, tValue);
         }
 
         HandleLineRenderer();
     }
 
-    void DrawQuadraticBezierCurve()
+    Vector3 CalculateRecursiveBezierPoint(ReadOnlySpan<Vector3> bezierControlPoints, float tValue)
     {
-        for (int i = 0; i < lineDensity; i++)
+        if (bezierControlPoints.Length == 1)
+            return bezierControlPoints[0];
+
+        var firstBezierNode = CalculateRecursiveBezierPoint(bezierControlPoints[0..^1], tValue);
+        var secondBezierNode = CalculateRecursiveBezierPoint(bezierControlPoints[1..], tValue);
+        var oneMinusT = 1 - tValue;
+        return new Vector3(oneMinusT * firstBezierNode.x + tValue * secondBezierNode.x, oneMinusT * firstBezierNode.y + tValue * secondBezierNode.y, firstBezierNode.z);
+    }
+
+    void SetCourseForPathFinder()
+    {
+        var pathFinder = GameObject.FindGameObjectWithTag(Constants.Tags.PathFinder);
+        if (pathFinder != null)
         {
-            float tValue = (i + 1) / (float)lineDensity;
-            bezierCurvePointPositions[i] = CalculateQuadraticLineerBezierPoint(tValue, bezierNodesOnScene[0].transform.position, bezierNodesOnScene[1].transform.position, bezierNodesOnScene[2].transform.position, bezierNodesOnScene[3].transform.position);
+            pathFinder.GetComponent<PathFinder>().SetPoints(bezierCurvePointPositions);
         }
-
-        HandleLineRenderer();
-    }
-    Vector3 CalculateLineerBezierPoint(float t, Vector3 p0, Vector3 p1)
-    {
-        return p0 + t * (p1 - p0);
-    }
-
-    Vector3 CalculateQuadraticLineerBezierPoint(float t, Vector3 startPoint, Vector3 firstControlPoint, Vector3 secondControlPoint, Vector3 endPoint)
-    {
-        float oneMinusT = 1 - t;
-        return Mathf.Pow(oneMinusT, 3) * startPoint +
-               3 * t * Mathf.Pow(oneMinusT, 2) * firstControlPoint +
-               3 * Mathf.Pow(t, 2) * oneMinusT * secondControlPoint +
-               Mathf.Pow(t, 3) * endPoint;
     }
 
     void HandleLineRenderer()
@@ -145,11 +182,12 @@ public class BezierManager : MonoBehaviour
         {
             curveLinePrefab.SetPositions(bezierCurvePointPositions);
 
-            var pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinder>();
-            if (pathFinder != null)
-            {
-                pathFinder.SetPoints(bezierCurvePointPositions);
-            }
+            SetCourseForPathFinder();
         }
+    }
+
+    public void ToggleVisibiltyOfLinesBetweenNodes()
+    {
+        linesBetweenNodes.SetActive(!linesBetweenNodes.activeSelf);
     }
 }
