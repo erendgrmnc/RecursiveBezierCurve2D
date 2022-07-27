@@ -19,7 +19,10 @@ public class LineController : MonoBehaviour
 
     void Update()
     {
-        AlignLinePosition();
+        if (lineRenderer != null)
+        {
+            AlignLinePosition();
+        }
     }
 
     public void SetUpLine(Transform[] points)
@@ -32,7 +35,11 @@ public class LineController : MonoBehaviour
     {
         for (int i = 0; i < points.Length; i++)
         {
-            lineRenderer.SetPosition(i, points[i].transform.position);
+            if (lineRenderer != null && points[i] != null)
+            {
+                lineRenderer.SetPosition(i, points[i].transform.position);
+            }
+
         }
     }
 }
