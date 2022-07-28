@@ -45,7 +45,7 @@ Create Qubic Bezier Curve Button: Click to create a Qubic bezier curve on scene.
 ![buttons](https://user-images.githubusercontent.com/57503158/181395524-b019c938-7be6-465a-bcd4-70443672aa76.gif)
 
 
-![image](https://user-images.githubusercontent.com/57503158/181395416-8e6848b8-fd20-4e85-b00d-1eb9106bad6f.png)
+![image](https://user-images.githubusercontent.com/57503158/181395636-68a23340-0fdc-43b2-99ed-d47f6f4541b5.png)
 
 Increase Speed Button: Increase actor traverse speed.
 
