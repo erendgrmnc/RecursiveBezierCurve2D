@@ -28,3 +28,19 @@ Right mouse click for placing bezier curve control node.
 
 Drag bezier curve control nodes with left click to move nodes on game scene.
 
+UI:
+![image](https://user-images.githubusercontent.com/57503158/181393227-4a539e08-d7ce-460c-80fd-f993ae93cc41.png)
+
+Hide Lines Between Nodes Button: Click to toggle visiblity of lines between bezier control nodes.
+
+Spawn Space Ship Button: Click to toggle space ship actor which is traverse along to the current curve.
+
+Create Qubic Bezier Curve Button: Click to create a Qubic bezier curve on scene.
+
+# 🔖 References
+
+https://en.wikipedia.org/wiki/Bézier_curve
+
+https://youtu.be/aVwxzDHniEw
+
+https://docs.unity3d.com/Manual/index.html
