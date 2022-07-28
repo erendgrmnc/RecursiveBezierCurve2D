@@ -11,11 +11,6 @@ public class LineController : MonoBehaviour
     {
         lineRenderer = GetComponent<LineRenderer>();
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     void Update()
     {
@@ -39,7 +34,6 @@ public class LineController : MonoBehaviour
             {
                 lineRenderer.SetPosition(i, points[i].transform.position);
             }
-
         }
     }
 }

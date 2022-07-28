@@ -152,7 +152,9 @@ public class BezierManager : MonoBehaviour
     {
         var newBezierNode = Instantiate(bezierNode, spawnPosition, gameObject.transform.rotation);
         newBezierNode.transform.parent = bezierNodes.transform;
+
         var bezierNodeSpriteRenderer = newBezierNode.GetComponent<SpriteRenderer>();
+
         var spriteSize = bezierNodeSpriteRenderer.size;
         bezierNodeSpriteRenderer.sprite = GetRandomPlanetSprite();
         bezierNodeSpriteRenderer.size = spriteSize;

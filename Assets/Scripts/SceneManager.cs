@@ -24,7 +24,6 @@ public class SceneManager : MonoBehaviour
     [SerializeField] 
     private GameObject toggleSpaceShipSpeedPanel;
 
-
     void Start()
     {
         InitSpaceShip();

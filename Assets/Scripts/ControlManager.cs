@@ -10,13 +10,11 @@ public class ControlManager : MonoBehaviour
     private Vector3 offset = Vector3.zero;
     private Vector3 mousePosition;
 
-    // Start is called before the first frame update
     void Start()
     {
         bezierManager = GameObject.FindGameObjectWithTag(Constants.Tags.BezierManager).GetComponent<BezierManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         CheckLeftMouseInput();

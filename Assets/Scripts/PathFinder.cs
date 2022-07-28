@@ -18,9 +18,12 @@ public class PathFinder : MonoBehaviour
     private Vector3[] positions = new Vector3[397];
     private Vector3[] curvePoints;
 
-    void Start()
+    void FixedUpdate()
     {
-        //curvePoints = GetLinePointsInWorldSpace();
+        if (curvePoints.Length > 0)
+        {
+            Move();
+        }
     }
 
     public void SetPoints(Vector3[] points)
@@ -38,14 +41,6 @@ public class PathFinder : MonoBehaviour
     {
         lineRenderer.GetPositions(positions);
         return positions;
-    }
-
-    void FixedUpdate()
-    {
-        if (curvePoints.Length > 0)
-        {
-            Move();
-        }
     }
 
     void Move()
@@ -94,13 +89,11 @@ public class PathFinder : MonoBehaviour
 
     void RotateToNextPoint(Vector3 target)
     {
-
         var offset = 90f;
         Vector2 direction = target - transform.position;
         direction.Normalize();
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(Vector3.back * (angle + offset));
-
     }
 
     public void ResetCourse()
