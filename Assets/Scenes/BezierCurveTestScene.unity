@@ -1851,9 +1851,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 607aac7d03839664db25d5797c6922bf, type: 3}
   qubicBezierCurveInitNodes:
   - {x: -4.2, y: -2.6, z: 0.3}
-  - {x: -3.2, y: 2, z: 0.3}
+  - {x: -3, y: 2, z: 0.3}
   - {x: 2.4, y: 2, z: 0.3}
-  - {x: 3.8, y: -2.7, z: 0.3}
+  - {x: 3.8, y: -2.6, z: 0.3}
 --- !u!1 &1572631625
 GameObject:
   m_ObjectHideFlags: 0
